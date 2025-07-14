@@ -1,11 +1,9 @@
-from flask import Flask
+import uuid
+from flask import Flask, request
 
 app = Flask("orderapp")
 
 all_orders = {
-    55:{'id':55, 'prod': 'milk', 'quantity':4}, 
-    56:{'id':56, 'prod': 'eggs', 'quantity':2}, 
-    57:{'id':57, 'prod': 'coffee', 'quantity':8} 
 }
 
 @app.route("/")
@@ -16,7 +14,26 @@ def main_error():
 @app.route('/orders', methods=['GET'])
 def get_all_orders():
     return all_orders
-    
+
+@app.route('/orders', methods=['POST'])
+def add_new_order():     #  Details: "prod", "quantity", but no id
+    order_details = request.get_json()
+    new_id = str(uuid.uuid4())
+    order_details['id'] = new_id
+    all_orders[new_id] = order_details
+    return {'id': new_id}
+
+@app.route('/orders/<id>', methods=['DELETE'])
+def delete_order(id):
+    if id in all_orders:
+       del all_orders[id]
+       return {'msg': 'deleted'}
+    else:
+        return {'msg': "can't delete, order id is invalid"}
+
+@app.route('/orders/<id>', methods=['GET'])
+def get_specific_order(id):
+    pass
 
 app.run('0.0.0.0', 8080)
 
