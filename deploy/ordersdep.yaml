@@ -8,11 +8,11 @@ spec:
   replicas: 5
   selector:
     matchLabels:
-      app: orders-pod
+      the-app-is: orders-pod
   template:
     metadata:
       labels:
-        app: orders-pod
+        the-app-is: orders-pod
     spec:
       containers:
       - name: orderscont
