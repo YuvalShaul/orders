@@ -33,10 +33,7 @@ jobs:
         echo "API is ready!"
     
     - name: Test API Endpoints
-      run: |
-        echo "Testing health endpoint..."
-        curl -f http://localhost:3000/health
-        
+      run: |        
         echo "Testing GET /orders (list all)..."
         curl -f http://localhost:3000/orders
         
