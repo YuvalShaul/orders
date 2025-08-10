@@ -24,7 +24,7 @@ jobs:
       run: |
         docker run -d \
           --name orders-container \
-          -p 3000:3000 \
+          -p 3000:8080 \
           orders-api:${{ github.sha }}
         
         # Wait for API to be ready (adjust port if different)
