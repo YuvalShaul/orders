@@ -35,7 +35,7 @@ def delete_order(id):
 
 @app.route('/orders/<id>', methods=['GET'])
 def get_specific_order(id):
-    pass
+    return all_orders[id]
 
 
 @app.route('/health', methods=['GET'])
