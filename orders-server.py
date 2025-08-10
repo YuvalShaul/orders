@@ -31,9 +31,17 @@ def delete_order(id):
     else:
         return {'msg': "can't delete, order id is invalid"}
 
+
+
 @app.route('/orders/<id>', methods=['GET'])
 def get_specific_order(id):
     pass
+
+
+@app.route('/health', methods=['GET'])
+def get_health():
+    return "good health"
+
 
 app.run('0.0.0.0', 8080)
 
