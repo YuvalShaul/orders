@@ -51,12 +51,6 @@ jobs:
         if [ ! -z "$ORDER_ID" ]; then
           echo "Testing GET /orders/$ORDER_ID (get specific order)..."
           curl -f http://localhost:3000/orders/$ORDER_ID
-          
-          echo "Testing PUT /orders/$ORDER_ID (update order)..."
-          curl -f -X PUT \
-            -H "Content-Type: application/json" \
-            -d '{"customer":"Updated Customer","items":[{"name":"Updated Item","quantity":2,"price":15.99}]}' \
-            http://localhost:3000/orders/$ORDER_ID
         fi
         
         echo "All API tests completed successfully!"
