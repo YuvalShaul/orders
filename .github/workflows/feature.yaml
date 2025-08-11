@@ -14,11 +14,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      echo "FEATURE..."
     
     - name: Build Docker image
       # github.sha is a built-in variable that contins the sha
       run: docker build -t orders-api:${{ github.sha }} .
+           echo "FEATURE..."
 
     
     - name: Start API container
