@@ -8,7 +8,7 @@ all_orders = {
 
 @app.route("/")
 def main_error():
-    result = {'msg':"root endpoint not supported"}
+    result = {'msg':"root endpoint not supported. Please try only /orders."}
     return result
 
 @app.route('/orders', methods=['GET'])
