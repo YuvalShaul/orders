@@ -1,0 +1,74 @@
+# .github/workflows/ci.yml
+name: Orders API CI/CD
+
+on:
+  push:
+    branches: 
+      - 'feature-*'
+
+jobs:
+  build-and-test:
+    echo "FEATURE..."
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      # github.sha is a built-in variable that contins the sha
+      run: docker build -t orders-api:${{ github.sha }} .
+
+    
+    - name: Start API container
+      run: |
+        docker run -d \
+          --name orders-container \
+          -p 3000:8080 \
+          orders-api:${{ github.sha }}
+        
+        # Wait for API to be ready (adjust port if different)
+        echo "Waiting for API to be ready..."
+        timeout 60 bash -c 'until curl -f http://localhost:3000/health; do echo "Waiting..."; sleep 2; done'
+        echo "API is ready!"
+    
+    - name: Test API Endpoints
+      run: |        
+        echo "Testing GET /orders (list all)..."
+        curl -f http://localhost:3000/orders
+        
+        echo "Testing POST /orders (create new order)..."
+        ORDER_RESPONSE=$(curl -s -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"customer":"Test Customer","items":[{"name":"Test Item","quantity":1,"price":10.99}]}' \
+          http://localhost:3000/orders)
+        
+        echo "Created order: $ORDER_RESPONSE"
+        
+        # Extract order ID for further testing (assuming JSON response has id field)
+        ORDER_ID=$(echo $ORDER_RESPONSE | jq -r '.id // .uuid // empty')
+        
+        if [ ! -z "$ORDER_ID" ]; then
+          echo "Testing GET /orders/$ORDER_ID (get specific order)..."
+          curl -f http://localhost:3000/orders/$ORDER_ID
+        fi
+        
+        echo "All API tests completed successfully!"
+    
+    - name: Show container logs (for debugging)
+      if: failure()
+      run: docker logs orders-container
+    
+    - name: Stop and cleanup containers
+      if: always()
+      run: |
+        docker stop orders-container || true
+        docker rm orders-container || true
+    
+    - name: Tag image for potential deployment
+      if: github.ref == 'refs/heads/main'
+      run: |
+        docker tag orders-api:${{ github.sha }} orders-api:latest
+        echo "Image tagged as latest for main branch"
+
+  
