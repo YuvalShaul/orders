@@ -20,7 +20,7 @@ def add_new_order():     #  Details: "prod", "quantity", but no id
     order_details = request.get_json()
     new_id = str(uuid.uuid4())
     order_details['id'] = new_id
-    # all_orders[new_id] = order_details
+    all_orders[new_id] = order_details
     all_orders['itzik'] = order_details
     return {'id': new_id}
 
