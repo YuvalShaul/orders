@@ -4,7 +4,7 @@ name: Orders API CI/CD
 on:
   push:
     branches: 
-      - 'feature-*'
+      - 'main'
 
 jobs:
   build-and-test:
