@@ -5,14 +5,14 @@ A demo order system
 ## API
 
 REST API Endpoints for Orders:
-GET    /orders           # List all orders
-POST   /orders           # Create new order
-GET    /orders/{id}      # Get specific order (UUID or readable ID)
-PUT    /orders/{id}      # Update order (full replacement)
-DELETE /orders/{id}      # Delete order
-GET    /health           # Health check
-Operations:
-
+GET    /orders           # List all orders  
+POST   /orders           # Create new order  
+GET    /orders/{id}      # Get specific order (UUID or readable ID)  
+PUT    /orders/{id}      # Update order (full replacement)  
+DELETE /orders/{id}      # Delete order  
+GET    /health           # Health check  
+Operations:  
+  
 List - Return all orders as JSON array
 Create - Accept order data, return new order with UUID + readable ID
 Read - Find order by UUID or readable ID, return order data
