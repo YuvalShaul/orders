@@ -5,6 +5,7 @@ RUN apk add py3-pip
 WORKDIR /orders
 COPY requirements.txt .
 COPY orders-server.py .
+COPY test_orders.py .
 RUN python3 -m venv ordersenv
 ENV PATH="/orders/ordersenv/bin:$PATH"
 RUN pip install -r requirements.txt
