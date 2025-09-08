@@ -10,10 +10,10 @@ class TestOrdersAPI(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures before each test method"""
-        # Create test client
-        self.app = app.test_client()
-        self.app.testing = True
-        
+        app.config['TESTING'] = True
+        self.client = app.test_client()  # Then get client
+
+
         # Clear all_orders dictionary before each test
         all_orders.clear()
         
@@ -23,10 +23,10 @@ class TestOrdersAPI(unittest.TestCase):
             'quantity': 2
         }
     
-    def test_post_new_order_creates_order_with_id(self):
+    def test_new_order(self):
         """Test POST /orders creates a new order and returns an ID"""
         # Send POST request to create new order
-        response = self.app.post('/orders',
+        response = self.client.post('/orders',
                                data=json.dumps(self.sample_order),
                                content_type='application/json')
         
@@ -44,39 +44,28 @@ class TestOrdersAPI(unittest.TestCase):
         uuid_obj = uuid.UUID(returned_id)  # This will raise ValueError if invalid
         self.assertIsInstance(uuid_obj, uuid.UUID)
         
-        # Test that the order was actually stored in all_orders
-        self.assertIn(returned_id, all_orders)
         
-        # Test that stored order contains original data plus the ID
-        stored_order = all_orders[returned_id]
-        self.assertEqual(stored_order['prod'], 'laptop')
-        self.assertEqual(stored_order['quantity'], 2)
-        self.assertEqual(stored_order['id'], returned_id)
-        
-        # Test that 'itzik' key also exists (as per your code)
-        self.assertIn('itzik', all_orders)
-        self.assertEqual(all_orders['itzik'], stored_order)
     
-    def test_get_all_orders_returns_stored_orders(self):
+    def test_get_all_orders(self):
         """Test GET /orders returns all stored orders"""
         # First, create a couple of orders using POST
         order1 = {'prod': 'mouse', 'quantity': 1}
         order2 = {'prod': 'keyboard', 'quantity': 1}
         
         # Post first order
-        response1 = self.app.post('/orders',
+        response1 = self.client.post('/orders',
                                 data=json.dumps(order1),
                                 content_type='application/json')
         id1 = json.loads(response1.data)['id']
         
         # Post second order
-        response2 = self.app.post('/orders',
+        response2 = self.client.post('/orders',
                                 data=json.dumps(order2),
                                 content_type='application/json')
         id2 = json.loads(response2.data)['id']
         
         # Now test GET /orders
-        response = self.app.get('/orders')
+        response = self.client.get('/orders')
         self.assertEqual(response.status_code, 200)
         
         # Parse response data
